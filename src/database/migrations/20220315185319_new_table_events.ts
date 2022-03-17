@@ -7,8 +7,12 @@ export async function up(knex: Knex): Promise<void> {
         table.string('name');
         table.string('resume');
         table.string('description');
-        table.dateTime('date')
+        table.string('type');
+        table.string('category');
+        table.string('event_image_small');
+        table.string('event_image_big');
         table.string('localization');
+        table.dateTime('event_date')
         table.timestamps();
 
     });

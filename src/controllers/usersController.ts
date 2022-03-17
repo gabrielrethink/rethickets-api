@@ -80,10 +80,18 @@ const deleteUserById = async (id: string) => {
   return user;
 };
 
-export default {
-  findAllUser,
-  findUserById,
-  createUser,
-  editUser,
-  deleteUserById,
+// POST = Create User
+const joinEvent = async ({
+  user_id, event_id
+}) => {
+  try {
+    const userJoinEvent = await knex('users_events').insert({ user_id, event_id })
+    return userJoinEvent
+  } catch (error) {
+    console.log(error.message)
+  }
 };
+
+export default {
+  findAllUser, findUserById, createUser, editUser, deleteUserById, joinEvent
+}
