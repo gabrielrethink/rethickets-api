@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from "express";
-import bcrypt from 'bcrypt';
-import knexConfig from "../../knexfile";
-import status from 'http-status';
-const knex = require("knex")(knexConfig);
+import httpStatus from 'http-status';
+import utils from "../utils/index";
+import knex from "../database";
+
+const errorHandler = (error: any, res: Response, next: NextFunction) => {
+  console.log(error)
+  res.locals.status = 500;
+  res.locals.message = error.message;
+  next();
+}
 
 // GET = All users
 export const findAllUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -11,10 +17,7 @@ export const findAllUser = async (req: Request, res: Response, next: NextFunctio
     res.locals.data = user;
     next();
   } catch (error) {
-    console.log(error);
-    res.locals.status = 500;
-    res.locals.message = error.message;
-    next();
+    errorHandler(error, res, next)
   }
 };
 
@@ -28,10 +31,7 @@ export const findUserById = async (req: Request, res: Response, next: NextFuncti
     res.locals.data = user;
     next();
   } catch (error) {
-    console.log(error);
-    res.locals.status = 500;
-    res.locals.message = error.message;
-    next();
+    errorHandler(error, res, next)
   }
 };
 
@@ -45,33 +45,27 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
       password,
       email } = req.body
 
-    const hashPassword = await bcrypt.hash(password, 10);
-    const validate = /(?<NomeDeEmail>[\w+\.]+\w+)@(?<Dominio>rethink.dev$)/
+    // const hashPassword = await bcrypt.hash(password, 10);
+    const hashPassword = utils.hashPassword(password)
 
-    if (!email.match(validate)) {
+    if (!email.match(utils.isValidEmail(email))) {
       throw new Error("Email invalido");
     }
 
     const user = {
-      username,
-      first_name,
-      last_name,
+      ...req.body,
       password: hashPassword,
-      email,
       avatar: `https://ui-avatars.com/api/?name=${first_name}+${last_name}`
     }
 
     const newUser = await knex('users').insert(user)
     res.locals.data = { userId: newUser[0] };
-    res.locals.status = status.CREATED
-    res.locals.message = status[status.CREATED]
+    res.locals.status = httpStatus.CREATED
+    res.locals.message = httpStatus[httpStatus.CREATED]
     next();
 
   } catch (error) {
-    console.log(error);
-    res.locals.status = 500;
-    res.locals.message = error.message;
-    next();
+    errorHandler(error, res, next)
   }
 }
 
@@ -86,15 +80,14 @@ export const editUser = async (req: Request, res: Response, next: NextFunction) 
       email } = req.body
 
     const user = await knex.select('*').from('users').where({ id: req.params.id }).first()
-    const validate = /(?<NomeDeEmail>[\w+\.]+\w+)@(?<Dominio>rethink.dev$)/
     if (!user) {
       throw new Error("Can't Find User");
     }
-    if (!email.match(validate)) {
+    if (!email.match(utils.isValidEmail(email))) {
       throw new Error("Email invalido");
     }
 
-    const hashPassword = password ? await bcrypt.hash(password, 10) : undefined
+    const hashPassword = password ? utils.hashPassword(password) : undefined
 
     const updatedUser = await knex
       .from("users")
@@ -111,10 +104,7 @@ export const editUser = async (req: Request, res: Response, next: NextFunction) 
     next();
 
   } catch (error) {
-    console.log(error);
-    res.locals.status = 500;
-    res.locals.message = error.message;
-    next();
+    errorHandler(error, res, next)
 
   }
 };
@@ -128,10 +118,7 @@ export const deleteUserById = async (req: Request, res: Response, next: NextFunc
     next();
 
   } catch (error) {
-    console.log(error);
-    res.locals.status = 500;
-    res.locals.message = error.message;
-    next();
+    errorHandler(error, res, next)
 
   }
 };
@@ -144,10 +131,7 @@ export const joinEvent = async (req: Request, res: Response, next: NextFunction)
     next();
 
   } catch (error) {
-    console.log(error);
-    res.locals.status = 500;
-    res.locals.message = error.message;
-    next();
+    errorHandler(error, res, next)
 
   }
 };

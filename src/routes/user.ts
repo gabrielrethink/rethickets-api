@@ -1,6 +1,5 @@
 import { Request, Response, Router } from "express";
-import knexConfig from "../config/knexConfig";
-const knex = require("knex")(knexConfig);
+import httpStatus from "http-status";
 import { findAllUser, findUserById, createUser, editUser, joinEvent, deleteUserById } from "../controllers/usersController";
 import { errorMiddleware, responseMiddleware } from "../middleware/responseMiddleware";
 import { editUserValidateBody, joinEventValidate, newUserValidateBody } from "../middleware/yupMiddleware";
@@ -8,7 +7,7 @@ import { editUserValidateBody, joinEventValidate, newUserValidateBody } from "..
 const router: Router = Router();
 
 router.get('/status', (req: Request, res: Response) => {
-    res.status(200).send('User Router');
+    res.status(httpStatus.OK).send('AUTHENTICATION WORKING');
 });
 
 // GET = All users

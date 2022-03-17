@@ -1,11 +1,9 @@
 import 'dotenv/config'
 import express, { Request, Response, Router } from "express";
 import routes from "./routes/index";
-import { knex } from 'knex'
-import config from "./config/knexConfig";
 import bodyParser from "body-parser";
+import httpStatus from 'http-status';
 
-export const knexInstance = knex(config);
 
 const app = express()
 const router: Router = Router();
@@ -14,7 +12,7 @@ app.use(bodyParser.json({ limit: "50mb" }));
 
 app.use(
     router.get("/", (req: Request, res: Response) => {
-        res.status(200).json({
+        res.status(httpStatus.OK).json({
             message: "rethinket is running...",
             version: "1.0.0",
         });

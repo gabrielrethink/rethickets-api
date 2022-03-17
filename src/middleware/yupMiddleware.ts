@@ -1,22 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as yup from 'yup';
 
-type UserType = {
-    username: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    password: string;
-}
 
-type UserEditType = {
-    id: string | number;
-    username?: string;
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-    password?: string;
-}
 
 export const newUserValidateBody = async (req: Request,
     res: Response,
@@ -55,6 +40,46 @@ export const editUserValidateBody = (data: UserEditType) => {
     }
 }
 
+export const editEventValidateBody = (data: UserEditType) => {
+    try {
+        const editUserScheme = yup.object().shape({
+            id: yup.number().required().positive().integer(),
+            name: yup.string(),
+            resume: yup.string(),
+            description: yup.string(),
+            type: yup.string(),
+            category: yup.string(),
+            eventImageSmall: yup.string(),
+            eventImageBig: yup.string(),
+            localization: yup.string(),
+            eventDate: yup.string(),
+        });
+
+        return editUserScheme.validate(data)
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+export const newEventValidateBody = (data: UserEditType) => {
+    try {
+        const editUserScheme = yup.object().shape({
+            name: yup.string().required("name is required"),
+            resume: yup.string().required("resume is required"),
+            description: yup.string(),
+            type: yup.string().required("type is required"),
+            category: yup.string(),
+            eventImageSmall: yup.string().required("eventImageSmall is required"),
+            eventImageBig: yup.string().required("eventImageBig is required"),
+            localization: yup.string().required("localization is required"),
+            eventDate: yup.string().required("eventDate is required"),
+        });
+
+        return editUserScheme.validate(data)
+    } catch (error) {
+        console.log(error.message)
+    }
+}
 export const joinEventValidate = (data: UserType) => {
     try {
         const joinEventScheme = yup.object().shape({

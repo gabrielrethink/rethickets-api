@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import knexConfig from "../../knexfile";
+import knex from "../database";
 import status from 'http-status';
 import utils from "../utils/index";
 const jwt = require("jsonwebtoken");
-const knex = require("knex")(knexConfig);
 
 
 export const authentication = async (req: Request, res: Response, next: NextFunction) => {

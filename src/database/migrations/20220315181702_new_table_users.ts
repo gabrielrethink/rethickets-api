@@ -6,8 +6,8 @@ export async function up(knex: Knex): Promise<void> {
         table.increments()
         table.string('username').unique();
         table.string('email').unique();
-        table.string('first_name');
-        table.string('last_name');
+        table.string('firstName');
+        table.string('lastName');
         table.string('password');
         table.string('avatar');
         table.boolean('admin').defaultTo(false);

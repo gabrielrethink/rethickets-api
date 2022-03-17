@@ -1,26 +1,34 @@
-import { Request, Response, NextFunction } from "express";
+import { Response } from "express";
+import httpStatus from "http-status";
+
+const statusResponse = (
+    res: Response,
+    info: any
+) => {
+    res.status(httpStatus.OK).json({ status: info });
+};
 
 const responseMiddleware = (
     res: Response,
 ) => {
-    const status = res.locals.status || 200;
+    const statusToSend = res.locals.status || httpStatus.OK;
 
-    if (status >= 400) {
-        res.status(status).json({
+    if (statusToSend >= httpStatus.BAD_REQUEST) {
+        res.status(statusToSend).json({
             message: res.locals.message,
         });
     }
-    res.status(status).json(res.locals.data);
+    res.status(statusToSend).json(res.locals.data);
 };
 
 const errorMiddleware = async (
     res: Response,
 ) => {
-    const status = res.locals.status || 500;
+    const statusToSend = res.locals.status || httpStatus.INTERNAL_SERVER_ERROR;
 
-    res.status(status).json({
+    res.status(statusToSend).json({
         message: res.locals.message || "Internal Server Error",
     });
 };
 
-export { responseMiddleware, errorMiddleware };
+export { responseMiddleware, errorMiddleware, statusResponse };

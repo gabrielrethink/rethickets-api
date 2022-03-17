@@ -9,10 +9,10 @@ export async function up(knex: Knex): Promise<void> {
         table.string('description');
         table.string('type');
         table.string('category');
-        table.string('event_image_small');
-        table.string('event_image_big');
+        table.string('eventImageSmall');
+        table.string('eventImageBig');
         table.string('localization');
-        table.dateTime('event_date')
+        table.dateTime('eventDate')
         table.timestamps();
 
     });
